@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Angel</title>
+    <meta name="description" content="Complete documentation for Angel - self-host AI models like DeepSeek, Qwen, Llama, Mistral, and Code Llama.">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="../index.html" class="nav-logo">
+                <span class="logo-icon">&#9650;</span>
+                <span class="logo-text">Angel</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../index.html#features">Features</a></li>
+                <li><a href="../index.html#models">Models</a></li>
+                <li><a href="../index.html#infrastructure">Infrastructure</a></li>
+                <li><a href="#" class="nav-docs-link">Docs</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="../index.html" class="btn btn-secondary btn-sm">Home</a>
+                <a href="#getting-started" class="btn btn-primary btn-sm">Get Started</a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="docs-layout">
+        <!-- Sidebar -->
+        <aside class="docs-sidebar" id="docsSidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Getting Started</div>
+                <ul class="sidebar-links">
+                    <li><a href="#getting-started" class="active">Introduction</a></li>
+                    <li><a href="#installation">Installation</a></li>
+                    <li><a href="#quickstart">Quick Start</a></li>
+                    <li><a href="#configuration">Configuration</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Models</div>
+                <ul class="sidebar-links">
+                    <li><a href="#models-ref">Overview</a></li>
+                    <li><a href="#deepseek">DeepSeek</a></li>
+                    <li><a href="#qwen">Qwen</a></li>
+                    <li><a href="#llama">Llama</a></li>
+                    <li><a href="#mistral">Mistral</a></li>
+                    <li><a href="#codellama">Code Llama</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Infrastructure</div>
+                <ul class="sidebar-links">
+                    <li><a href="#infra-overview">Overview</a></li>
+                    <li><a href="#azure">Azure GPU VMs</a></li>
+                    <li><a href="#digitalocean">DigitalOcean Droplets</a></li>
+                    <li><a href="#own-server">Your Own Server</a></li>
+                    <li><a href="#multi-gpu">Multi-GPU Setup</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">API Reference</div>
+                <ul class="sidebar-links">
+                    <li><a href="#api-reference">Endpoints</a></li>
+                    <li><a href="#chat-completions">Chat Completions</a></li>
+                    <li><a href="#completions">Completions</a></li>
+                    <li><a href="#embeddings">Embeddings</a></li>
+                    <li><a href="#model-management">Model Management</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Advanced</div>
+                <ul class="sidebar-links">
+                    <li><a href="#quantization">Quantization</a></li>
+                    <li><a href="#performance">Performance Tuning</a></li>
+                    <li><a href="#monitoring">Monitoring</a></li>
+                    <li><a href="#troubleshooting">Troubleshooting</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="docs-content">
+            <!-- Getting Started -->
+            <h1 id="getting-started">Angel Documentation</h1>
+            <p>Angel is an open-source tool for self-hosting large language models. It gives you a private, OpenAI-compatible inference endpoint running on your own infrastructure &mdash; with zero API costs.</p>
+
+            <div class="callout">
+                <p><strong>New to Angel?</strong> Follow the <a href="#quickstart">Quick Start</a> guide to get your first model running in under 5 minutes.</p>
+            </div>
+
+            <h2 id="installation">Installation</h2>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>Python 3.10 or higher</li>
+                <li>NVIDIA GPU with CUDA 12.1+ (compute capability 7.0+)</li>
+                <li>At least 16 GB of RAM (model-dependent)</li>
+                <li>Linux (Ubuntu 22.04+ recommended) or WSL2 on Windows</li>
+            </ul>
+
+            <h3>Install via pip</h3>
+            <pre><code>pip install angel-ai</code></pre>
+
+            <h3>Install from source</h3>
+            <pre><code>git clone https://github.com/eduard5524/angel.git
+cd angel
+pip install -e ".[dev]"</code></pre>
+
+            <h3>Verify installation</h3>
+            <pre><code>angel --version
+# Angel v1.0.0
+
+angel doctor
+# Checking CUDA... OK (CUDA 12.4)
+# Checking GPU... OK (NVIDIA A100 80GB)
+# Checking disk space... OK (234 GB free)
+# All checks passed!</code></pre>
+
+            <h2 id="quickstart">Quick Start</h2>
+            <p>Get a model running in three steps:</p>
+
+            <h3>1. Pull a model</h3>
+            <pre><code># Pull a model (downloads and optimizes automatically)
+angel pull deepseek-r1:7b
+
+# List available models
+angel list --remote
+
+# See downloaded models
+angel list</code></pre>
+
+            <h3>2. Start the server</h3>
+            <pre><code># Start serving on port 8000
+angel serve deepseek-r1:7b --port 8000
+
+# With custom options
+angel serve deepseek-r1:7b \
+    --port 8000 \
+    --host 0.0.0.0 \
+    --max-concurrent 8 \
+    --gpu-memory-utilization 0.9</code></pre>
+
+            <h3>3. Send a request</h3>
+            <pre><code># Using curl
+curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "deepseek-r1:7b",
+    "messages": [
+      {"role": "user", "content": "Hello, how are you?"}
+    ]
+  }'</code></pre>
+
+            <pre><code># Using Python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:8000/v1",
+    api_key="not-needed"
+)
+
+response = client.chat.completions.create(
+    model="deepseek-r1:7b",
+    messages=[
+        {"role": "user", "content": "Explain quantum computing."}
+    ]
+)
+print(response.choices[0].message.content)</code></pre>
+
+            <h2 id="configuration">Configuration</h2>
+            <p>Angel can be configured via a YAML file, environment variables, or command-line flags.</p>
+
+            <h3>Configuration file</h3>
+            <p>Create <code>angel.yaml</code> in your project root or <code>~/.angel/config.yaml</code>:</p>
+            <pre><code># angel.yaml
+server:
+  host: 0.0.0.0
+  port: 8000
+  workers: 1
+  cors_origins: ["*"]
+
+model:
+  name: deepseek-r1:7b
+  quantization: auto        # auto, awq, gptq, none
+  gpu_memory_utilization: 0.9
+  max_model_len: 8192
+  trust_remote_code: true
+
+inference:
+  max_concurrent_requests: 16
+  timeout: 120
+  temperature: 0.7
+  max_tokens: 4096
+
+logging:
+  level: info               # debug, info, warning, error
+  format: json
+  file: /var/log/angel/server.log</code></pre>
+
+            <h3>Environment variables</h3>
+            <p>All configuration options can be set via environment variables prefixed with <code>ANGEL_</code>:</p>
+            <pre><code>export ANGEL_SERVER_PORT=8000
+export ANGEL_SERVER_HOST=0.0.0.0
+export ANGEL_MODEL_NAME=deepseek-r1:7b
+export ANGEL_MODEL_GPU_MEMORY_UTILIZATION=0.9
+export ANGEL_INFERENCE_MAX_CONCURRENT_REQUESTS=16</code></pre>
+
+            <h3>CLI flags reference</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Description</th>
+                        <th>Default</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>--port</code></td>
+                        <td>Server port</td>
+                        <td>8000</td>
+                    </tr>
+                    <tr>
+                        <td><code>--host</code></td>
+                        <td>Bind address</td>
+                        <td>127.0.0.1</td>
+                    </tr>
+                    <tr>
+                        <td><code>--gpu-memory-utilization</code></td>
+                        <td>Fraction of GPU memory to use</td>
+                        <td>0.9</td>
+                    </tr>
+                    <tr>
+                        <td><code>--max-model-len</code></td>
+                        <td>Maximum sequence length</td>
+                        <td>Model default</td>
+                    </tr>
+                    <tr>
+                        <td><code>--quantization</code></td>
+                        <td>Quantization method (auto, awq, gptq, none)</td>
+                        <td>auto</td>
+                    </tr>
+                    <tr>
+                        <td><code>--max-concurrent</code></td>
+                        <td>Max concurrent requests</td>
+                        <td>16</td>
+                    </tr>
+                    <tr>
+                        <td><code>--tensor-parallel</code></td>
+                        <td>Number of GPUs for tensor parallelism</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td><code>--log-level</code></td>
+                        <td>Logging level</td>
+                        <td>info</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Models Reference -->
+            <h2 id="models-ref">Supported Models</h2>
+            <p>Angel supports all major open-source language models. Each model is optimized for fast inference with automatic quantization.</p>
+
+            <h3 id="deepseek">DeepSeek</h3>
+            <p>DeepSeek models excel at reasoning, mathematics, and code generation. The R1 series uses chain-of-thought reasoning for complex problem solving.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Parameters</th>
+                        <th>VRAM Required</th>
+                        <th>Context Length</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>deepseek-r1:7b</code></td>
+                        <td>7B</td>
+                        <td>~6 GB</td>
+                        <td>128K</td>
+                    </tr>
+                    <tr>
+                        <td><code>deepseek-r1:32b</code></td>
+                        <td>32B</td>
+                        <td>~24 GB</td>
+                        <td>128K</td>
+                    </tr>
+                    <tr>
+                        <td><code>deepseek-r1:70b</code></td>
+                        <td>70B</td>
+                        <td>~48 GB</td>
+                        <td>128K</td>
+                    </tr>
+                    <tr>
+                        <td><code>deepseek-v3:671b</code></td>
+                        <td>671B (MoE)</td>
+                        <td>~160 GB</td>
+                        <td>128K</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><code># Pull and run DeepSeek
+angel pull deepseek-r1:7b
+angel serve deepseek-r1:7b --port 8000
+
+# For larger variants, use multi-GPU
+angel serve deepseek-r1:70b --tensor-parallel 2 --port 8000</code></pre>
+
+            <h3 id="qwen">Qwen</h3>
+            <p>Alibaba's Qwen models offer excellent multilingual support and strong performance across diverse tasks including reasoning, coding, and creative writing.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Parameters</th>
+                        <th>VRAM Required</th>
+                        <th>Context Length</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>qwen2.5:7b</code></td>
+                        <td>7B</td>
+                        <td>~6 GB</td>
+                        <td>128K</td>
+                    </tr>
+                    <tr>
+                        <td><code>qwen2.5:14b</code></td>
+                        <td>14B</td>
+                        <td>~12 GB</td>
+                        <td>128K</td>
+                    </tr>
+                    <tr>
+                        <td><code>qwen2.5:32b</code></td>
+                        <td>32B</td>
+                        <td>~24 GB</td>
+                        <td>128K</td>
+                    </tr>
+                    <tr>
+                        <td><code>qwen2.5:72b</code></td>
+                        <td>72B</td>
+                        <td>~48 GB</td>
+                        <td>128K</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><code>angel pull qwen2.5:7b
+angel serve qwen2.5:7b --port 8000</code></pre>
+
+            <h3 id="llama">Llama</h3>
+            <p>Meta's Llama models are the most widely used open-source LLMs. They offer excellent general-purpose performance and have the largest ecosystem of tools and fine-tunes.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Parameters</th>
+                        <th>VRAM Required</th>
+                        <th>Context Length</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>llama3.3:8b</code></td>
+                        <td>8B</td>
+                        <td>~6 GB</td>
+                        <td>128K</td>
+                    </tr>
+                    <tr>
+                        <td><code>llama3.3:70b</code></td>
+                        <td>70B</td>
+                        <td>~48 GB</td>
+                        <td>128K</td>
+                    </tr>
+                    <tr>
+                        <td><code>llama3.1:405b</code></td>
+                        <td>405B</td>
+                        <td>~240 GB</td>
+                        <td>128K</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><code>angel pull llama3.3:8b
+angel serve llama3.3:8b --port 8000
+
+# The 405B model requires 4+ A100 80GB GPUs
+angel serve llama3.1:405b --tensor-parallel 4 --port 8000</code></pre>
+
+            <h3 id="mistral">Mistral</h3>
+            <p>Mistral models are known for their efficiency-to-performance ratio, making them ideal for production deployments where latency and cost matter.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Parameters</th>
+                        <th>VRAM Required</th>
+                        <th>Context Length</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>mistral:7b</code></td>
+                        <td>7B</td>
+                        <td>~6 GB</td>
+                        <td>32K</td>
+                    </tr>
+                    <tr>
+                        <td><code>mixtral:8x7b</code></td>
+                        <td>8x7B (MoE)</td>
+                        <td>~26 GB</td>
+                        <td>32K</td>
+                    </tr>
+                    <tr>
+                        <td><code>mixtral:8x22b</code></td>
+                        <td>8x22B (MoE)</td>
+                        <td>~88 GB</td>
+                        <td>32K</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><code>angel pull mistral:7b
+angel serve mistral:7b --port 8000</code></pre>
+
+            <h3 id="codellama">Code Llama</h3>
+            <p>Code Llama is specialized for code generation, completion, and debugging. It supports dozens of programming languages and is ideal for developer tools and IDE integrations.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Parameters</th>
+                        <th>VRAM Required</th>
+                        <th>Context Length</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>codellama:7b</code></td>
+                        <td>7B</td>
+                        <td>~6 GB</td>
+                        <td>100K</td>
+                    </tr>
+                    <tr>
+                        <td><code>codellama:13b</code></td>
+                        <td>13B</td>
+                        <td>~10 GB</td>
+                        <td>100K</td>
+                    </tr>
+                    <tr>
+                        <td><code>codellama:34b</code></td>
+                        <td>34B</td>
+                        <td>~24 GB</td>
+                        <td>100K</td>
+                    </tr>
+                    <tr>
+                        <td><code>codellama:70b</code></td>
+                        <td>70B</td>
+                        <td>~48 GB</td>
+                        <td>100K</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><code>angel pull codellama:7b
+angel serve codellama:7b --port 8000
+
+# Use the instruct variant for chat-style code assistance
+angel pull codellama:7b-instruct
+angel serve codellama:7b-instruct --port 8000</code></pre>
+
+            <!-- Infrastructure -->
+            <h2 id="infra-overview">Infrastructure Setup</h2>
+            <p>Angel runs on any machine with an NVIDIA GPU. Below are guides for the most common deployment targets.</p>
+
+            <div class="callout">
+                <p><strong>Minimum requirements:</strong> NVIDIA GPU with CUDA 12.1+, 16 GB RAM, 50 GB disk space. Actual requirements depend on the model size.</p>
+            </div>
+
+            <h3 id="azure">Azure GPU VMs</h3>
+            <p>Azure offers NC, ND, and NV-series VMs with NVIDIA GPUs. Recommended for enterprise deployments with Azure's global network and compliance certifications.</p>
+
+            <h4>Recommended VM sizes</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>VM Size</th>
+                        <th>GPU</th>
+                        <th>VRAM</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Standard_NC4as_T4_v3</td>
+                        <td>1x T4</td>
+                        <td>16 GB</td>
+                        <td>7B models</td>
+                    </tr>
+                    <tr>
+                        <td>Standard_NC24ads_A100_v4</td>
+                        <td>1x A100</td>
+                        <td>80 GB</td>
+                        <td>Up to 70B models</td>
+                    </tr>
+                    <tr>
+                        <td>Standard_ND96asr_v4</td>
+                        <td>8x A100</td>
+                        <td>640 GB</td>
+                        <td>405B+ models</td>
+                    </tr>
+                    <tr>
+                        <td>Standard_ND96isr_H100_v5</td>
+                        <td>8x H100</td>
+                        <td>640 GB</td>
+                        <td>Max performance</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Setup steps</h4>
+            <pre><code># 1. Create the VM (using Azure CLI)
+az vm create \
+  --resource-group myResourceGroup \
+  --name angel-server \
+  --image Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest \
+  --size Standard_NC24ads_A100_v4 \
+  --admin-username azureuser \
+  --generate-ssh-keys
+
+# 2. SSH into the VM
+ssh azureuser@&lt;public-ip&gt;
+
+# 3. Install NVIDIA drivers and CUDA
+sudo apt update && sudo apt install -y nvidia-driver-535 nvidia-cuda-toolkit
+
+# 4. Install Angel
+pip install angel-ai
+
+# 5. Pull and serve a model
+angel pull deepseek-r1:7b
+angel serve deepseek-r1:7b --host 0.0.0.0 --port 8000</code></pre>
+
+            <div class="callout warning">
+                <p><strong>Important:</strong> Make sure to open port 8000 in your Network Security Group (NSG) rules, or use a reverse proxy with HTTPS for production.</p>
+            </div>
+
+            <h3 id="digitalocean">DigitalOcean GPU Droplets</h3>
+            <p>DigitalOcean's GPU Droplets offer simple, flat-rate pricing with H100 GPUs. Great for developers who want a straightforward setup.</p>
+
+            <h4>Available GPU Droplets</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Droplet Type</th>
+                        <th>GPU</th>
+                        <th>VRAM</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>gpu-h100x1-80gb</td>
+                        <td>1x H100</td>
+                        <td>80 GB</td>
+                        <td>~$2.50/hr</td>
+                    </tr>
+                    <tr>
+                        <td>gpu-h100x8-640gb</td>
+                        <td>8x H100</td>
+                        <td>640 GB</td>
+                        <td>~$20/hr</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Setup steps</h4>
+            <pre><code># 1. Create a GPU Droplet via doctl
+doctl compute droplet create angel-server \
+  --size gpu-h100x1-80gb \
+  --image ubuntu-22-04-x64 \
+  --region nyc1 \
+  --ssh-keys &lt;your-key-id&gt;
+
+# 2. SSH into the Droplet
+ssh root@&lt;droplet-ip&gt;
+
+# 3. NVIDIA drivers are pre-installed on GPU Droplets
+nvidia-smi  # Verify GPU is detected
+
+# 4. Install Angel
+pip install angel-ai
+
+# 5. Pull and serve
+angel pull llama3.3:70b
+angel serve llama3.3:70b --host 0.0.0.0 --port 8000</code></pre>
+
+            <h3 id="own-server">Your Own Server</h3>
+            <p>Run Angel on any Linux machine with an NVIDIA GPU. This gives you full control over hardware, networking, and security.</p>
+
+            <h4>Hardware requirements</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model Size</th>
+                        <th>Minimum GPU</th>
+                        <th>Recommended GPU</th>
+                        <th>RAM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>7B</td>
+                        <td>RTX 3060 12GB</td>
+                        <td>RTX 4090 24GB</td>
+                        <td>16 GB</td>
+                    </tr>
+                    <tr>
+                        <td>13B&ndash;14B</td>
+                        <td>RTX 4090 24GB</td>
+                        <td>A100 40GB</td>
+                        <td>32 GB</td>
+                    </tr>
+                    <tr>
+                        <td>30B&ndash;34B</td>
+                        <td>A100 40GB</td>
+                        <td>A100 80GB</td>
+                        <td>64 GB</td>
+                    </tr>
+                    <tr>
+                        <td>65B&ndash;72B</td>
+                        <td>A100 80GB</td>
+                        <td>2x A100 80GB</td>
+                        <td>128 GB</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Setup steps</h4>
+            <pre><code># 1. Install NVIDIA drivers (Ubuntu)
+sudo apt update
+sudo apt install -y nvidia-driver-535
+
+# 2. Install CUDA toolkit
+sudo apt install -y nvidia-cuda-toolkit
+
+# 3. Verify GPU
+nvidia-smi
+
+# 4. Install Angel
+pip install angel-ai
+angel doctor  # Verify everything is configured
+
+# 5. Pull and serve
+angel pull mistral:7b
+angel serve mistral:7b --host 0.0.0.0 --port 8000</code></pre>
+
+            <h4>Running as a systemd service</h4>
+            <pre><code># Create service file: /etc/systemd/system/angel.service
+[Unit]
+Description=Angel AI Model Server
+After=network.target
+
+[Service]
+Type=simple
+User=angel
+ExecStart=/usr/local/bin/angel serve deepseek-r1:7b --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=10
+Environment=ANGEL_MODEL_GPU_MEMORY_UTILIZATION=0.9
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+
+            <pre><code># Enable and start
+sudo systemctl daemon-reload
+sudo systemctl enable angel
+sudo systemctl start angel
+
+# Check status
+sudo systemctl status angel
+journalctl -u angel -f</code></pre>
+
+            <h3 id="multi-gpu">Multi-GPU Setup</h3>
+            <p>Angel supports tensor parallelism for distributing large models across multiple GPUs. This is essential for running models that don't fit in a single GPU's memory.</p>
+
+            <h4>Tensor parallelism</h4>
+            <pre><code># Automatically distribute across all available GPUs
+angel serve deepseek-r1:70b --tensor-parallel auto
+
+# Specify exact number of GPUs
+angel serve deepseek-r1:70b --tensor-parallel 2
+
+# Choose specific GPU devices
+CUDA_VISIBLE_DEVICES=0,1 angel serve deepseek-r1:70b --tensor-parallel 2</code></pre>
+
+            <h4>GPU requirements by model size</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>1x A100 80GB</th>
+                        <th>2x A100 80GB</th>
+                        <th>4x A100 80GB</th>
+                        <th>8x A100 80GB</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>7B&ndash;8B</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>32B&ndash;34B</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>70B&ndash;72B</td>
+                        <td>Tight</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>405B</td>
+                        <td>No</td>
+                        <td>No</td>
+                        <td>Yes (AWQ)</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>671B (MoE)</td>
+                        <td>No</td>
+                        <td>No</td>
+                        <td>No</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- API Reference -->
+            <h2 id="api-reference">API Reference</h2>
+            <p>Angel exposes an OpenAI-compatible REST API. Any client library or tool that works with OpenAI's API will work with Angel.</p>
+
+            <h3 id="chat-completions">Chat Completions</h3>
+            <p><code>POST /v1/chat/completions</code></p>
+            <pre><code>curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "deepseek-r1:7b",
+    "messages": [
+      {"role": "system", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "What is machine learning?"}
+    ],
+    "temperature": 0.7,
+    "max_tokens": 1024,
+    "stream": false
+  }'</code></pre>
+
+            <h4>Request parameters</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>model</code></td>
+                        <td>string</td>
+                        <td>Model identifier (required)</td>
+                    </tr>
+                    <tr>
+                        <td><code>messages</code></td>
+                        <td>array</td>
+                        <td>Array of message objects (required)</td>
+                    </tr>
+                    <tr>
+                        <td><code>temperature</code></td>
+                        <td>float</td>
+                        <td>Sampling temperature (0&ndash;2, default: 0.7)</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_tokens</code></td>
+                        <td>integer</td>
+                        <td>Maximum tokens to generate</td>
+                    </tr>
+                    <tr>
+                        <td><code>stream</code></td>
+                        <td>boolean</td>
+                        <td>Stream responses via SSE (default: false)</td>
+                    </tr>
+                    <tr>
+                        <td><code>top_p</code></td>
+                        <td>float</td>
+                        <td>Nucleus sampling parameter (default: 1.0)</td>
+                    </tr>
+                    <tr>
+                        <td><code>stop</code></td>
+                        <td>string/array</td>
+                        <td>Stop sequences</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4>Streaming responses</h4>
+            <pre><code># Stream with curl
+curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "deepseek-r1:7b",
+    "messages": [{"role": "user", "content": "Write a poem."}],
+    "stream": true
+  }'
+
+# Stream with Python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://localhost:8000/v1", api_key="not-needed")
+
+stream = client.chat.completions.create(
+    model="deepseek-r1:7b",
+    messages=[{"role": "user", "content": "Write a poem."}],
+    stream=True
+)
+
+for chunk in stream:
+    if chunk.choices[0].delta.content:
+        print(chunk.choices[0].delta.content, end="")</code></pre>
+
+            <h3 id="completions">Text Completions</h3>
+            <p><code>POST /v1/completions</code></p>
+            <pre><code>curl http://localhost:8000/v1/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "codellama:7b",
+    "prompt": "def fibonacci(n):\n    ",
+    "max_tokens": 200,
+    "temperature": 0.2
+  }'</code></pre>
+
+            <h3 id="embeddings">Embeddings</h3>
+            <p><code>POST /v1/embeddings</code></p>
+            <pre><code>curl http://localhost:8000/v1/embeddings \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "deepseek-r1:7b",
+    "input": "Angel is a self-hosted AI model server."
+  }'</code></pre>
+
+            <h3 id="model-management">Model Management</h3>
+
+            <h4>List models</h4>
+            <pre><code># CLI
+angel list             # Downloaded models
+angel list --remote    # All available models
+
+# API
+curl http://localhost:8000/v1/models</code></pre>
+
+            <h4>Pull models</h4>
+            <pre><code># Pull a specific model
+angel pull deepseek-r1:7b
+
+# Pull with specific quantization
+angel pull deepseek-r1:7b --quantization awq
+
+# Pull from a custom registry
+angel pull my-registry.com/my-model:latest</code></pre>
+
+            <h4>Remove models</h4>
+            <pre><code># Remove a downloaded model
+angel rm deepseek-r1:7b
+
+# Remove all models
+angel rm --all</code></pre>
+
+            <!-- Advanced -->
+            <h2 id="quantization">Quantization</h2>
+            <p>Quantization reduces model size and memory usage, allowing larger models to run on less hardware. Angel supports several quantization methods.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Compression</th>
+                        <th>Quality Impact</th>
+                        <th>Speed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>FP16 (none)</td>
+                        <td>1x (baseline)</td>
+                        <td>None</td>
+                        <td>Fast</td>
+                    </tr>
+                    <tr>
+                        <td>AWQ (4-bit)</td>
+                        <td>~4x</td>
+                        <td>Minimal</td>
+                        <td>Fastest</td>
+                    </tr>
+                    <tr>
+                        <td>GPTQ (4-bit)</td>
+                        <td>~4x</td>
+                        <td>Minimal</td>
+                        <td>Fast</td>
+                    </tr>
+                    <tr>
+                        <td>GGUF (variable)</td>
+                        <td>2&ndash;8x</td>
+                        <td>Varies</td>
+                        <td>Good</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><code># Serve with specific quantization
+angel serve deepseek-r1:70b --quantization awq
+
+# Auto-detect best quantization for your hardware
+angel serve deepseek-r1:70b --quantization auto</code></pre>
+
+            <h2 id="performance">Performance Tuning</h2>
+            <p>Tips for maximizing throughput and minimizing latency.</p>
+
+            <h3>GPU memory utilization</h3>
+            <pre><code># Use 95% of GPU memory (leaves 5% for overhead)
+angel serve deepseek-r1:7b --gpu-memory-utilization 0.95</code></pre>
+
+            <h3>Batch size optimization</h3>
+            <pre><code># Increase max concurrent requests for throughput
+angel serve deepseek-r1:7b --max-concurrent 32</code></pre>
+
+            <h3>Context length</h3>
+            <pre><code># Limit context length to save memory
+angel serve deepseek-r1:7b --max-model-len 4096</code></pre>
+
+            <h3>Benchmarking</h3>
+            <pre><code># Run built-in benchmarks
+angel benchmark deepseek-r1:7b \
+    --num-prompts 100 \
+    --concurrent 8 \
+    --prompt-length 256 \
+    --output-length 512</code></pre>
+
+            <h2 id="monitoring">Monitoring</h2>
+            <p>Angel provides built-in monitoring and metrics endpoints.</p>
+
+            <h3>Health check</h3>
+            <pre><code>curl http://localhost:8000/health
+# {"status": "healthy", "model": "deepseek-r1:7b", "gpu_utilization": 0.45}</code></pre>
+
+            <h3>Prometheus metrics</h3>
+            <pre><code># Enable metrics endpoint
+angel serve deepseek-r1:7b --metrics-port 9090
+
+# Scrape at http://localhost:9090/metrics
+# Available metrics:
+#   angel_requests_total
+#   angel_request_duration_seconds
+#   angel_tokens_generated_total
+#   angel_gpu_memory_used_bytes
+#   angel_active_requests</code></pre>
+
+            <h3>Dashboard</h3>
+            <pre><code># Launch the built-in monitoring dashboard
+angel dashboard --port 9091
+
+# Access at http://localhost:9091</code></pre>
+
+            <h2 id="troubleshooting">Troubleshooting</h2>
+
+            <h3>Common issues</h3>
+
+            <h4>CUDA out of memory</h4>
+            <pre><code># Solution 1: Lower GPU memory utilization
+angel serve model --gpu-memory-utilization 0.8
+
+# Solution 2: Use a smaller context length
+angel serve model --max-model-len 2048
+
+# Solution 3: Use quantization
+angel serve model --quantization awq
+
+# Solution 4: Use tensor parallelism (multi-GPU)
+angel serve model --tensor-parallel 2</code></pre>
+
+            <h4>Slow inference</h4>
+            <pre><code># Check GPU utilization
+nvidia-smi
+
+# Ensure CUDA is properly installed
+angel doctor
+
+# Try AWQ quantization for faster inference
+angel serve model --quantization awq</code></pre>
+
+            <h4>Model download fails</h4>
+            <pre><code># Retry with verbose logging
+angel pull model --log-level debug
+
+# Use a mirror
+angel pull model --mirror https://mirror.example.com
+
+# Check disk space
+df -h</code></pre>
+
+            <h4>Port already in use</h4>
+            <pre><code># Use a different port
+angel serve model --port 8001
+
+# Find and kill the process using port 8000
+lsof -i :8000
+kill &lt;PID&gt;</code></pre>
+
+            <div class="callout success">
+                <p><strong>Need help?</strong> Open an issue on <a href="https://github.com/eduard5524/angel/issues">GitHub</a> or join the <a href="https://github.com/eduard5524/angel/discussions">discussions</a>.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile sidebar toggle -->
+    <button class="docs-mobile-toggle" id="docsMobileToggle" aria-label="Toggle sidebar">
+        &#9776;
+    </button>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>

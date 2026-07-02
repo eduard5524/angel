@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angel - Self-Host Your Own AI Models</title>
+    <meta name="description" content="Angel lets you self-host powerful AI models like DeepSeek, Qwen, Llama, Mistral, and Code Llama. Eliminate API costs and own your inference endpoint.">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="/" class="nav-logo">
+                <span class="logo-icon">&#9650;</span>
+                <span class="logo-text">Angel</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#models">Models</a></li>
+                <li><a href="#infrastructure">Infrastructure</a></li>
+                <li><a href="#quickstart">Quick Start</a></li>
+                <li><a href="docs/index.html" class="nav-docs-link">Docs</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="docs/index.html" class="btn btn-secondary btn-sm">Documentation</a>
+                <a href="#quickstart" class="btn btn-primary btn-sm">Get Started</a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="hero-gradient"></div>
+            <div class="hero-grid"></div>
+        </div>
+        <div class="container hero-container">
+            <div class="hero-badge">Open Source &middot; Self-Hosted &middot; Zero API Costs</div>
+            <h1 class="hero-title">
+                Host Your Own<br>
+                <span class="gradient-text">AI Models</span>
+            </h1>
+            <p class="hero-subtitle">
+                Eliminate API costs by self-hosting powerful language models.
+                Run DeepSeek, Qwen, Llama, Mistral, and Code Llama on your own infrastructure
+                and get your own private inference endpoint.
+            </p>
+            <div class="hero-actions">
+                <a href="#quickstart" class="btn btn-primary btn-lg">
+                    Get Started
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="docs/index.html" class="btn btn-outline btn-lg">
+                    Read the Docs
+                </a>
+            </div>
+            <div class="hero-terminal">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <span class="terminal-title">terminal</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">$</span>
+                        <span class="terminal-cmd" id="typewriter"></span>
+                        <span class="terminal-cursor">|</span>
+                    </div>
+                    <div class="terminal-output" id="terminalOutput"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" data-target="0">$0</span>
+                    <span class="stat-label">API Costs</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">5+</span>
+                    <span class="stat-label">Supported Models</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">Infrastructure Options</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Data Privacy</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Why Self-Host?</span>
+                <h2 class="section-title">Complete Control Over Your AI Stack</h2>
+                <p class="section-desc">Stop paying per-token API fees. Own your models, your data, and your inference pipeline.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <h3>Zero API Costs</h3>
+                    <p>No per-token pricing, no rate limits, no surprise bills. Pay only for your infrastructure and run unlimited requests.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    </div>
+                    <h3>Full Data Privacy</h3>
+                    <p>Your data never leaves your infrastructure. Perfect for healthcare, finance, legal, and any privacy-sensitive application.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    </div>
+                    <h3>Fully Customizable</h3>
+                    <p>Fine-tune models on your own data, adjust parameters, and configure inference exactly how you need it.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </div>
+                    <h3>Low Latency</h3>
+                    <p>No network hops to external APIs. Get faster responses by running inference on hardware close to your application.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                    </div>
+                    <h3>OpenAI-Compatible API</h3>
+                    <p>Drop-in replacement for OpenAI endpoints. Switch your existing applications without changing a single line of code.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <h3>Multi-GPU Support</h3>
+                    <p>Scale across multiple GPUs for larger models and higher throughput. Automatic model parallelism out of the box.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Models Section -->
+    <section class="models" id="models">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Supported Models</span>
+                <h2 class="section-title">Run the Best Open-Source Models</h2>
+                <p class="section-desc">Choose from the most capable open-source language models available today.</p>
+            </div>
+            <div class="models-grid">
+                <div class="model-card" data-model="deepseek">
+                    <div class="model-header">
+                        <div class="model-logo">DS</div>
+                        <div class="model-badge">Popular</div>
+                    </div>
+                    <h3 class="model-name">DeepSeek</h3>
+                    <p class="model-desc">State-of-the-art reasoning and coding capabilities. Excels at complex problem-solving and mathematical tasks.</p>
+                    <ul class="model-specs">
+                        <li><strong>Parameters:</strong> 7B &ndash; 671B (MoE)</li>
+                        <li><strong>Context:</strong> Up to 128K tokens</li>
+                        <li><strong>Best for:</strong> Reasoning, math, code</li>
+                    </ul>
+                    <a href="docs/index.html#deepseek" class="model-link">View setup guide &rarr;</a>
+                </div>
+                <div class="model-card" data-model="qwen">
+                    <div class="model-header">
+                        <div class="model-logo">Qw</div>
+                        <div class="model-badge">Multilingual</div>
+                    </div>
+                    <h3 class="model-name">Qwen</h3>
+                    <p class="model-desc">Alibaba's powerful multilingual model with strong performance across diverse languages and tasks.</p>
+                    <ul class="model-specs">
+                        <li><strong>Parameters:</strong> 0.5B &ndash; 72B</li>
+                        <li><strong>Context:</strong> Up to 128K tokens</li>
+                        <li><strong>Best for:</strong> Multilingual, general tasks</li>
+                    </ul>
+                    <a href="docs/index.html#qwen" class="model-link">View setup guide &rarr;</a>
+                </div>
+                <div class="model-card" data-model="llama">
+                    <div class="model-header">
+                        <div class="model-logo">Ll</div>
+                        <div class="model-badge">Meta</div>
+                    </div>
+                    <h3 class="model-name">Llama</h3>
+                    <p class="model-desc">Meta's flagship open-source model. Excellent general-purpose performance with broad community support.</p>
+                    <ul class="model-specs">
+                        <li><strong>Parameters:</strong> 8B &ndash; 405B</li>
+                        <li><strong>Context:</strong> Up to 128K tokens</li>
+                        <li><strong>Best for:</strong> General purpose, chat</li>
+                    </ul>
+                    <a href="docs/index.html#llama" class="model-link">View setup guide &rarr;</a>
+                </div>
+                <div class="model-card" data-model="mistral">
+                    <div class="model-header">
+                        <div class="model-logo">Mi</div>
+                        <div class="model-badge">Efficient</div>
+                    </div>
+                    <h3 class="model-name">Mistral</h3>
+                    <p class="model-desc">Exceptional efficiency-to-performance ratio. Ideal for production deployments where speed and cost matter.</p>
+                    <ul class="model-specs">
+                        <li><strong>Parameters:</strong> 7B &ndash; 8x22B (MoE)</li>
+                        <li><strong>Context:</strong> Up to 32K tokens</li>
+                        <li><strong>Best for:</strong> Fast inference, efficiency</li>
+                    </ul>
+                    <a href="docs/index.html#mistral" class="model-link">View setup guide &rarr;</a>
+                </div>
+                <div class="model-card" data-model="codellama">
+                    <div class="model-header">
+                        <div class="model-logo">CL</div>
+                        <div class="model-badge">Code</div>
+                    </div>
+                    <h3 class="model-name">Code Llama</h3>
+                    <p class="model-desc">Specialized for code generation, completion, and debugging. Supports dozens of programming languages.</p>
+                    <ul class="model-specs">
+                        <li><strong>Parameters:</strong> 7B &ndash; 70B</li>
+                        <li><strong>Context:</strong> Up to 100K tokens</li>
+                        <li><strong>Best for:</strong> Code generation, debugging</li>
+                    </ul>
+                    <a href="docs/index.html#codellama" class="model-link">View setup guide &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Infrastructure Section -->
+    <section class="infrastructure" id="infrastructure">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Infrastructure</span>
+                <h2 class="section-title">Run Anywhere With GPU Power</h2>
+                <p class="section-desc">Deploy on the infrastructure that works best for you.</p>
+            </div>
+            <div class="infra-grid">
+                <div class="infra-card">
+                    <div class="infra-icon azure">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6.5 14.5v-3.505c0-6 8-6 8 0V14.5"/><rect x="2" y="14" width="20" height="7" rx="2"/><circle cx="8" cy="17.5" r="1"/><circle cx="16" cy="17.5" r="1"/><path d="M2 3h20"/><path d="M6 3v4"/><path d="M18 3v4"/></svg>
+                    </div>
+                    <h3>Azure GPU VMs</h3>
+                    <p>NC, ND, and NV-series virtual machines with NVIDIA A100, H100, and T4 GPUs. Enterprise-grade with Azure's global network.</p>
+                    <div class="infra-specs">
+                        <span class="spec-tag">A100 80GB</span>
+                        <span class="spec-tag">H100</span>
+                        <span class="spec-tag">T4</span>
+                    </div>
+                    <a href="docs/index.html#azure" class="infra-link">Setup guide &rarr;</a>
+                </div>
+                <div class="infra-card">
+                    <div class="infra-icon digitalocean">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                    </div>
+                    <h3>DigitalOcean GPU Droplets</h3>
+                    <p>Simple, developer-friendly GPU instances. Get started quickly with flat pricing and DigitalOcean's intuitive interface.</p>
+                    <div class="infra-specs">
+                        <span class="spec-tag">H100</span>
+                        <span class="spec-tag">Simple pricing</span>
+                        <span class="spec-tag">Fast deploy</span>
+                    </div>
+                    <a href="docs/index.html#digitalocean" class="infra-link">Setup guide &rarr;</a>
+                </div>
+                <div class="infra-card">
+                    <div class="infra-icon selfhosted">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                    </div>
+                    <h3>Your Own Server</h3>
+                    <p>Run on any Linux server with an NVIDIA GPU. Full control over your hardware, networking, and security configuration.</p>
+                    <div class="infra-specs">
+                        <span class="spec-tag">Any NVIDIA GPU</span>
+                        <span class="spec-tag">Full control</span>
+                        <span class="spec-tag">On-premise</span>
+                    </div>
+                    <a href="docs/index.html#own-server" class="infra-link">Setup guide &rarr;</a>
+                </div>
+                <div class="infra-card">
+                    <div class="infra-icon multigpu">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                    </div>
+                    <h3>Multi-GPU Workstation</h3>
+                    <p>Leverage multiple GPUs for running larger models or achieving higher throughput. Automatic tensor parallelism support.</p>
+                    <div class="infra-specs">
+                        <span class="spec-tag">Multi-GPU</span>
+                        <span class="spec-tag">Tensor parallel</span>
+                        <span class="spec-tag">High throughput</span>
+                    </div>
+                    <a href="docs/index.html#multi-gpu" class="infra-link">Setup guide &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section class="quickstart" id="quickstart">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Quick Start</span>
+                <h2 class="section-title">Up and Running in Minutes</h2>
+                <p class="section-desc">Three steps to your own private inference endpoint.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Install Angel</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>bash</span>
+                            <button class="copy-btn" data-copy="pip install angel-ai">Copy</button>
+                        </div>
+                        <pre><code>pip install angel-ai</code></pre>
+                    </div>
+                    <p>Install Angel via pip. Requires Python 3.10+ and CUDA 12.1+.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Download a Model</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>bash</span>
+                            <button class="copy-btn" data-copy="angel pull deepseek-r1:7b">Copy</button>
+                        </div>
+                        <pre><code>angel pull deepseek-r1:7b</code></pre>
+                    </div>
+                    <p>Pull any supported model. Angel handles quantization and optimization automatically.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Start Serving</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>bash</span>
+                            <button class="copy-btn" data-copy="angel serve deepseek-r1:7b --port 8000">Copy</button>
+                        </div>
+                        <pre><code>angel serve deepseek-r1:7b --port 8000</code></pre>
+                    </div>
+                    <p>Your OpenAI-compatible endpoint is now live at <code>http://localhost:8000/v1</code>.</p>
+                </div>
+            </div>
+            <div class="quickstart-demo">
+                <h3>Use Your Endpoint</h3>
+                <div class="code-block code-block-lg">
+                    <div class="code-header">
+                        <span>python</span>
+                        <button class="copy-btn" data-copy='from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:8000/v1",
+    api_key="not-needed"  # No API key required!
+)
+
+response = client.chat.completions.create(
+    model="deepseek-r1:7b",
+    messages=[
+        {"role": "user", "content": "Explain quantum computing in simple terms."}
+    ]
+)
+
+print(response.choices[0].message.content)'>Copy</button>
+                    </div>
+                    <pre><code><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+
+client = OpenAI(
+    base_url=<span class="str">"http://localhost:8000/v1"</span>,
+    api_key=<span class="str">"not-needed"</span>  <span class="cmt"># No API key required!</span>
+)
+
+response = client.chat.completions.create(
+    model=<span class="str">"deepseek-r1:7b"</span>,
+    messages=[
+        {<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: <span class="str">"Explain quantum computing."</span>}
+    ]
+)
+
+<span class="fn">print</span>(response.choices[<span class="num">0</span>].message.content)</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Own Your AI Infrastructure?</h2>
+                <p>Stop paying per-token. Start self-hosting today.</p>
+                <div class="cta-actions">
+                    <a href="#quickstart" class="btn btn-primary btn-lg">Get Started Free</a>
+                    <a href="docs/index.html" class="btn btn-outline btn-lg">Read Documentation</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="nav-logo">
+                        <span class="logo-icon">&#9650;</span>
+                        <span class="logo-text">Angel</span>
+                    </a>
+                    <p>Self-host the best open-source AI models. Eliminate API costs and own your inference.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#models">Models</a></li>
+                        <li><a href="#infrastructure">Infrastructure</a></li>
+                        <li><a href="#quickstart">Quick Start</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Documentation</h4>
+                    <ul>
+                        <li><a href="docs/index.html">Getting Started</a></li>
+                        <li><a href="docs/index.html#models-ref">Model Reference</a></li>
+                        <li><a href="docs/index.html#api-reference">API Reference</a></li>
+                        <li><a href="docs/index.html#configuration">Configuration</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/eduard5524/angel">GitHub</a></li>
+                        <li><a href="https://github.com/eduard5524/angel/issues">Issues</a></li>
+                        <li><a href="https://github.com/eduard5524/angel/discussions">Discussions</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Angel. Open source under the MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
