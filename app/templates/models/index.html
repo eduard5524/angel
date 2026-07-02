@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Models - Angel{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>Models</h1>
+        <p>Available models for self-hosted inference. {% if running %}{{ running|length }} model(s) currently loaded.{% else %}No models detected on the inference server.{% endif %}</p>
+    </div>
+
+    {% if running %}
+    <div class="section-block">
+        <h2>Running Models</h2>
+        <div class="running-models">
+            {% for model in running %}
+            <div class="running-tag">
+                <span class="status-dot online"></span>
+                {{ model }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="section-block">
+        <h2>Available Models</h2>
+        <div class="models-table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Family</th>
+                        <th>Parameters</th>
+                        <th>VRAM</th>
+                        <th>Context</th>
+                        <th>Status</th>
+                        {% if current_user.is_admin %}
+                        <th>Action</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for model in available %}
+                    <tr>
+                        <td>
+                            <strong>{{ model.name }}</strong>
+                            <div class="table-sub">{{ model.description }}</div>
+                        </td>
+                        <td>{{ model.family }}</td>
+                        <td>{{ model.parameters }}</td>
+                        <td>{{ model.vram }}</td>
+                        <td>{{ model.context }}</td>
+                        <td>
+                            {% if model.id in running %}
+                            <span class="badge badge-success">Running</span>
+                            {% else %}
+                            <span class="badge badge-dim">Not loaded</span>
+                            {% endif %}
+                        </td>
+                        {% if current_user.is_admin %}
+                        <td>
+                            {% if model.id not in running %}
+                            <button class="btn btn-sm btn-outline pull-btn" data-model="{{ model.id }}">
+                                Pull
+                            </button>
+                            {% else %}
+                            <span class="text-muted">Ready</span>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.pull-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var model = this.dataset.model;
+        this.textContent = 'Pulling...';
+        this.disabled = true;
+        fetch('/models/pull/' + encodeURIComponent(model), { method: 'POST' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                alert(data.message);
+                if (data.ok) location.reload();
+            })
+            .catch(function() { alert('Request failed.'); })
+            .finally(function() { btn.textContent = 'Pull'; btn.disabled = false; });
+    });
+});
+</script>
+{% endblock %}

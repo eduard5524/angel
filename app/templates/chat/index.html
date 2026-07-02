@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Chat - Angel{% endblock %}
+
+{% block content %}
+<div class="chat-layout">
+    <!-- Sidebar -->
+    <aside class="chat-sidebar" id="chatSidebar">
+        <div class="sidebar-header">
+            <h3>Conversations</h3>
+            <button class="btn-icon" id="newChatBtn" title="New conversation">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+        </div>
+        <div class="sidebar-conversations" id="convList">
+            {% for conv in conversations %}
+            <a href="{{ url_for('chat.conversation', conv_id=conv.id) }}"
+               class="conv-item {% if active_conv and active_conv.id == conv.id %}active{% endif %}"
+               data-id="{{ conv.id }}">
+                <div class="conv-title">{{ conv.title }}</div>
+                <div class="conv-meta">{{ conv.model_name }} &middot; {{ conv.updated_at.strftime('%b %d') }}</div>
+            </a>
+            {% endfor %}
+        </div>
+    </aside>
+
+    <!-- Chat Area -->
+    <div class="chat-main">
+        {% if active_conv %}
+        <!-- Active conversation -->
+        <div class="chat-header">
+            <button class="btn-icon mobile-only" id="sidebarToggle">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div>
+                <h2 id="convTitle">{{ active_conv.title }}</h2>
+                <span class="chat-model">{{ active_conv.model_name }}</span>
+            </div>
+            <button class="btn-icon danger" id="deleteConvBtn" title="Delete conversation">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            </button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            {% for msg in active_conv.messages %}
+            <div class="message message-{{ msg.role }}">
+                <div class="message-avatar">
+                    {% if msg.role == 'user' %}{{ current_user.username[0]|upper }}{% else %}A{% endif %}
+                </div>
+                <div class="message-content">
+                    <div class="message-role">{% if msg.role == 'user' %}You{% else %}Angel{% endif %}</div>
+                    <div class="message-text">{{ msg.content }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="chat-input-area">
+            <form id="chatForm" data-conv-id="{{ active_conv.id }}">
+                <div class="chat-input-wrapper">
+                    <textarea id="chatInput" placeholder="Type your message..." rows="1"></textarea>
+                    <button type="submit" class="btn-send" id="sendBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <!-- Empty state -->
+        <div class="chat-empty">
+            <button class="btn-icon mobile-only" id="sidebarToggle" style="position:absolute;top:20px;left:20px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="empty-content">
+                <span class="logo-icon xl">&#9650;</span>
+                <h2>Start a conversation</h2>
+                <p>Choose a model and start chatting with your self-hosted AI.</p>
+                <div class="model-selector">
+                    <label for="modelSelect">Model</label>
+                    <select id="modelSelect">
+                        <option value="deepseek-r1:7b">DeepSeek R1 7B</option>
+                        <option value="qwen2.5:7b">Qwen 2.5 7B</option>
+                        <option value="llama3.3:8b">Llama 3.3 8B</option>
+                        <option value="mistral:7b">Mistral 7B</option>
+                        <option value="codellama:7b">Code Llama 7B</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="startChatBtn">New Conversation</button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

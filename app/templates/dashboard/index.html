@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Angel{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1>Dashboard</h1>
+        <p>{% if is_admin %}Platform overview and admin stats.{% else %}Your usage overview.{% endif %}</p>
+    </div>
+
+    <div class="stats-cards">
+        {% if is_admin %}
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.total_users }}</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        {% endif %}
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.total_conversations }}</div>
+            <div class="stat-label">Conversations</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.total_messages }}</div>
+            <div class="stat-label">Messages</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ "{:,}".format(stats.total_tokens) }}</div>
+            <div class="stat-label">Tokens Used</div>
+        </div>
+    </div>
+
+    {% if stats.models_used %}
+    <div class="section-block">
+        <h2>Models Used</h2>
+        <div class="models-usage">
+            {% for model_name, count in stats.models_used %}
+            <div class="usage-bar-item">
+                <div class="usage-label">
+                    <span>{{ model_name }}</span>
+                    <span class="text-muted">{{ count }} conversation{{ 's' if count != 1 }}</span>
+                </div>
+                <div class="usage-bar">
+                    <div class="usage-fill" style="width: {{ (count / stats.total_conversations * 100) if stats.total_conversations else 0 }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if is_admin and stats.top_users %}
+    <div class="section-block">
+        <h2>Top Users</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Conversations</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for username, count in stats.top_users %}
+                <tr>
+                    <td>{{ username }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if is_admin and stats.recent_users %}
+    <div class="section-block">
+        <h2>Recent Users</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Joined</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in stats.recent_users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.created_at.strftime('%b %d, %Y') }}</td>
+                    <td>{% if user.is_admin %}<span class="badge badge-primary">Admin</span>{% else %}User{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if not is_admin and stats.recent_conversations %}
+    <div class="section-block">
+        <h2>Recent Conversations</h2>
+        <div class="recent-list">
+            {% for conv in stats.recent_conversations %}
+            <a href="{{ url_for('chat.conversation', conv_id=conv.id) }}" class="recent-item">
+                <div class="recent-title">{{ conv.title }}</div>
+                <div class="recent-meta">{{ conv.model_name }} &middot; {{ conv.updated_at.strftime('%b %d, %Y') }}</div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
