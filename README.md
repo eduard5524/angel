@@ -2,7 +2,7 @@
 
 **Self-host your own AI models. Eliminate API costs.**
 
-Angel lets you run powerful open-source language models on your own infrastructure and gives you a private, OpenAI-compatible inference endpoint.
+Angel lets you run powerful open-source language models on your own infrastructure and gives you a private, OpenAI-compatible inference endpoint — plus a web UI with login, chat, model management, and usage dashboard.
 
 ## Supported Models
 
@@ -25,24 +25,45 @@ Run on the hardware that works best for you:
 
 ## Quick Start
 
+### 1. Start an inference backend
+
+You need an OpenAI-compatible or Ollama inference server running. For example, with [Ollama](https://ollama.ai):
+
 ```bash
-# Install
-pip install angel-ai
+# Install Ollama
+curl -fsSL https://ollama.ai/install.sh | sh
 
-# Pull a model
-angel pull deepseek-r1:7b
-
-# Start serving
-angel serve deepseek-r1:7b --port 8000
+# Pull and run a model
+ollama pull deepseek-r1:7b
+ollama serve
 ```
 
-Your OpenAI-compatible endpoint is now live at `http://localhost:8000/v1`.
+### 2. Run the Angel web app
+
+```bash
+# Clone and install
+git clone https://github.com/eduard5524/angel.git
+cd angel
+pip install -r requirements.txt
+
+# Point to your inference backend (Ollama default: http://localhost:11434)
+export ANGEL_INFERENCE_URL=http://localhost:11434
+
+# Start the app
+python run.py
+```
+
+Open `http://localhost:5000` in your browser, register an account, and start chatting.
+
+### 3. Use the API directly
+
+Your inference backend also exposes an OpenAI-compatible API:
 
 ```python
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="http://localhost:8000/v1",
+    base_url="http://localhost:11434/v1",
     api_key="not-needed"
 )
 
@@ -56,6 +77,31 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
+## Web App Features
+
+The Angel web app (`app/`) provides a full-featured interface for your self-hosted models:
+
+- **Authentication** — Register and login; first user automatically becomes admin
+- **Chat** — Create conversations, pick models, chat with your self-hosted AI
+- **Model Management** — Browse available models, see which are running, pull new models (admin)
+- **Dashboard** — Track usage stats (conversations, messages, tokens), model usage breakdown, admin overview of all users
+
+### Configuration
+
+| Environment Variable | Description | Default |
+|---------------------|-------------|---------|
+| `ANGEL_INFERENCE_URL` | Inference backend URL (Ollama or OpenAI-compatible) | `http://localhost:11434` |
+| `ANGEL_SECRET_KEY` | Flask session secret key | `change-me-in-production` |
+| `ANGEL_DATABASE_URL` | SQLAlchemy database URI | `sqlite:///angel.db` |
+
+### Production Deployment
+
+```bash
+# With gunicorn
+pip install gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 "app:create_app()"
+```
+
 ## Features
 
 - **Zero API costs** — No per-token pricing, no rate limits, no surprise bills
@@ -64,6 +110,7 @@ print(response.choices[0].message.content)
 - **Multi-GPU support** — Automatic tensor parallelism for large models
 - **Low latency** — No network hops to external APIs
 - **Fully customizable** — Fine-tune models, adjust parameters, configure inference
+- **Web UI with login** — Chat, manage models, and track usage from the browser
 
 ## Requirements
 
@@ -71,6 +118,30 @@ print(response.choices[0].message.content)
 - NVIDIA GPU with CUDA 12.1+ (compute capability 7.0+)
 - 16 GB+ RAM (model-dependent)
 - Linux (Ubuntu 22.04+ recommended) or WSL2
+
+## Project Structure
+
+```
+angel/
+├── index.html              # Landing page
+├── docs/index.html         # Documentation
+├── css/style.css           # Landing page styles
+├── js/main.js              # Landing page scripts
+├── run.py                  # App entry point
+├── requirements.txt        # Python dependencies
+└── app/
+    ├── __init__.py          # Flask app factory
+    ├── models/user.py       # User, Conversation, Message models
+    ├── routes/
+    │   ├── auth.py          # Login, register, logout
+    │   ├── chat.py          # Chat interface and message handling
+    │   ├── dashboard.py     # Usage stats and admin dashboard
+    │   └── models_mgmt.py   # Model listing and pulling
+    ├── static/
+    │   ├── css/app.css      # App styles (dark theme)
+    │   └── js/chat.js       # Chat interactivity
+    └── templates/           # Jinja2 HTML templates
+```
 
 ## Documentation
 
